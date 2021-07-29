@@ -35,7 +35,9 @@
     <arg name="use_map_topic" value="false" />
     <arg name="scan_topic"    value="$(arg scan_topic)" />
   </include>
-  <param name="amcl/initial_pose_y" value="-1.0"/>
+  <param name="amcl/initial_pose_x" value="$(arg initial_pose_x)"/>
+  <param name="amcl/initial_pose_y" value="$(arg initial_pose_y)"/>
+  <param name="amcl/initial_pose_a" value="$(arg initial_pose_a)"/>
 
   <!--- run Move Base -->
   <include file="$(find jackal_navigation)/launch/include/move_base.launch" />

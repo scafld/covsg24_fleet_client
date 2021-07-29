@@ -1,0 +1,59 @@
+<launch>
+  <arg name="map_file" default="$(find covsg24_fleet_client)/maps/delta_study_rooms/map.yaml"/>
+  <arg name="world_file" default="$(env HOME)/.gazebo/worlds/delta_study_rooms.world"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="scan_topic" default="front/scan" />
+  <arg name="initial_pose_x" default="3.1"/>
+  <arg name="initial_pose_y" default="-10.6"/>
+  <arg name="initial_pose_a" default="0"/>
+
+  <!-- launch gazebo sim -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="0" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="use_sim_time" value="$(arg use_sim_time)" />
+    <arg name="headless" value="false" />
+    <arg name="world_name" value="$(arg world_file)" />
+  </include>
+
+  <!-- spawn jackal -->
+  <include file="$(find jackal_gazebo)/launch/spawn_jackal.launch">
+    <arg name="x" value="$(arg initial_pose_x)" />
+    <arg name="y" value="$(arg initial_pose_y)" />
+    <arg name="z" value="1.0" />
+    <arg name="yaw" value="$(arg initial_pose_a)" />
+    <arg name="config" value="front_laser" />
+    <arg name="joystick" value="false" />
+  </include>
+
+  <!-- run the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!--- run AMCL -->
+  <include file="$(find jackal_navigation)/launch/include/amcl.launch">
+    <arg name="use_map_topic" value="false" />
+    <arg name="scan_topic"    value="$(arg scan_topic)" />
+  </include>
+  <!-- <param name="amcl/initial_pose_x" value="3.0"/>
+  <param name="amcl/initial_pose_y" value="1.0"/>
+  <param name="amcl/initial_pose_a" value="0.0"/> -->
+
+  <!--- run Move Base -->
+  <include file="$(find jackal_navigation)/launch/include/move_base.launch" />
+
+  <!-- launch the free fleet client -->
+  <node name="jackal_free_fleet_client_node" pkg="free_fleet_client_ros1"
+      type="free_fleet_client_ros1" output="screen">
+    <param name="fleet_name" type="string" value="jackal_fleet"/>
+    <param name="robot_name" type="string" value="jackal_0"/>
+    <param name="robot_frame" type="string" value="base_link"/>
+    <param name="level_name" type="string" value="study_rooms"/>
+    <param name="dds_domain" type="int" value="42"/>
+    <param name="max_dist_to_first_waypoint" type="double" value="10.0"/>
+  </node>
+
+  <node name="tb3_battery_state_pub" pkg="rostopic" type="rostopic" args="pub /battery_state sensor_msgs/BatteryState
+  --file $(find covsg24_fleet_client)/launch/include/jackal_battery_state_msg.yaml -r 3" output="screen"/>
+
+</launch>
