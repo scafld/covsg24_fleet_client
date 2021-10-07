@@ -1,0 +1,59 @@
+<launch>
+  <arg name="map_file" default="$(find covsg24_fleet_client)/maps/hospital_l2/hospital_l2.yaml"/>
+  <arg name="world_file" default="$(env HOME)/.gazebo/worlds/hospital_2nd_floor.world"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="scan_topic" default="front/scan" />
+  <arg name="initial_pose_x" default="60.4"/>
+  <arg name="initial_pose_y" default="-29.4"/>
+  <arg name="initial_pose_a" default="0"/>
+
+  <!-- launch gazebo sim -->
+  <include file="$(find robotont_gazebo)/launch/upload_description.launch">
+    <arg name="__ns" value=""/>
+    <arg name="model" default="robotont_gazebo_lidar"/>
+  </include>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_file)"/>
+  </include>
+
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" output="screen"
+    args="-gazebo_namespace gazebo 
+          -param robot_description 
+          -urdf 
+          -x $(arg initial_pose_x)
+          -y $(arg initial_pose_y)
+          -Y $(arg initial_pose_a) 
+          -model robotont"/>  
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+
+  <!-- run the map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)"/>
+  <!-- <include file="$(find robotont_demos)/launch/gmapping.launch"/> -->
+
+  <!--- run AMCL -->
+  <node name="amcl" pkg="amcl" type="amcl" output="screen"/>
+  <!-- <param name="amcl/initial_pose_x" value="0.0"/>
+  <param name="amcl/initial_pose_y" value="0.5"/> -->
+
+  <!--- run Move Base -->
+  <include file="$(find robotont_navigation)/launch/move_base.launch"/>
+
+  <!-- launch the free fleet client -->
+  <node name="robotont_free_fleet_client_node" pkg="free_fleet_client_ros1"
+      type="free_fleet_client_ros1" output="screen">
+    <param name="fleet_name" type="string" value="robotont_fleet"/>
+    <param name="robot_name" type="string" value="robotont_0"/>
+    <param name="robot_frame" type="string" value="base_link"/>
+    <param name="level_name" type="string" value="study_rooms"/>
+    <param name="dds_domain" type="int" value="42"/>
+    <param name="max_dist_to_first_waypoint" type="double" value="10.0"/>
+  </node>
+
+  <node name="robotont_battery_state_pub" pkg="rostopic" type="rostopic" args="pub /battery_state sensor_msgs/BatteryState
+  --file $(find covsg24_fleet_client)/launch/include/jackal_battery_state_msg.yaml -r 3" output="screen"/>
+
+</launch>
