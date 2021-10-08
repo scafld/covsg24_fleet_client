@@ -36,8 +36,6 @@
 
   <!--- run AMCL -->
   <node name="amcl" pkg="amcl" type="amcl" output="screen"/>
-  <!-- <param name="amcl/initial_pose_x" value="0.0"/>
-  <param name="amcl/initial_pose_y" value="0.5"/> -->
 
   <!--- run Move Base -->
   <include file="$(find robotont_navigation)/launch/move_base.launch"/>
@@ -48,7 +46,7 @@
     <param name="fleet_name" type="string" value="robotont_fleet"/>
     <param name="robot_name" type="string" value="robotont_0"/>
     <param name="robot_frame" type="string" value="base_link"/>
-    <param name="level_name" type="string" value="study_rooms"/>
+    <param name="level_name" type="string" value="L2"/>
     <param name="dds_domain" type="int" value="42"/>
     <param name="max_dist_to_first_waypoint" type="double" value="10.0"/>
   </node>
