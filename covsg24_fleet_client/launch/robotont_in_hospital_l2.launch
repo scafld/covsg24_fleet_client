@@ -35,9 +35,9 @@
   <!-- <include file="$(find robotont_demos)/launch/gmapping.launch"/> -->
 
   <!--- run AMCL -->
-  <node name="amcl" pkg="amcl" type="amcl" output="screen"/>
-
   <!--- run Move Base -->
+  <include file="$(find robotont_navigation)/launch/amcl.launch"/>
+
   <include file="$(find robotont_navigation)/launch/move_base.launch"/>
 
   <!-- launch the free fleet client -->
