@@ -1,12 +1,12 @@
 <launch>
-  <arg name="map_file" default="$(find covsg24_fleet_client)/maps/hospital_l2/hospital_l2.yaml"/>
+  <arg name="map_file" default="$(find covsg24_fleet_client)/maps/hospital_l2/map.yaml"/>
   <arg name="world_file" default="$(env HOME)/.gazebo/worlds/hospital_2nd_floor.world"/>
   <arg name="use_sim_time" default="true"/>
   <arg name="gui" default="true"/>
   <arg name="scan_topic" default="front/scan" />
-  <arg name="initial_pose_x" default="60.4"/>
-  <arg name="initial_pose_y" default="-29.4"/>
-  <arg name="initial_pose_a" default="0"/>
+  <arg name="initial_pose_x" default="83"/>
+  <arg name="initial_pose_y" default="-50.6"/>
+  <arg name="initial_pose_a" default="-1.57"/>
 
   <!-- launch gazebo sim -->
   <include file="$(find robotont_gazebo)/launch/upload_description.launch">
@@ -36,7 +36,10 @@
 
   <!--- run AMCL -->
   <!--- run Move Base -->
-  <include file="$(find robotont_navigation)/launch/amcl.launch"/>
+  <include file="$(find robotont_navigation)/launch/amcl.launch">
+    <arg name="initial_pose_x" value="0.0"/>
+    <arg name="initial_pose_y" value="19.3"/>
+  </include>
 
   <include file="$(find robotont_navigation)/launch/move_base.launch"/>
 

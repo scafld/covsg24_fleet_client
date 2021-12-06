@@ -1,17 +1,17 @@
 <launch>
   <!-- launch the free fleet client -->
-  <node name="jackal_free_fleet_client_node" pkg="free_fleet_client_ros1"
+  <node name="tiago_free_fleet_client_node" pkg="free_fleet_client_ros1"
       type="free_fleet_client_ros1" output="screen">
-    <param name="fleet_name" type="string" value="covid_fleet"/>
+    <param name="fleet_name" type="string" value="tiago_fleet"/>
     <param name="robot_name" type="string" value="tiago_0"/>
     <param name="robot_frame" type="string" value="base_link"/>
-    <param name="level_name" type="string" value="L3"/>
+    <param name="level_name" type="string" value="L2"/>
     <param name="dds_domain" type="int" value="42"/>
     <param name="wait_timeout" type="double" value="30.0"/>
     <param name="max_dist_to_first_waypoint" type="double" value="10.0"/>
   </node>
 
-  <node name="tb3_battery_state_pub" pkg="rostopic" type="rostopic" args="pub /battery_state sensor_msgs/BatteryState
+  <node name="tiago_battery_state_pub" pkg="rostopic" type="rostopic" args="pub /battery_state sensor_msgs/BatteryState
   --file $(find covsg24_fleet_client)/launch/include/tiago_battery_state_msg.yaml -r 3" output="screen"/>
 
 </launch>
