@@ -32,7 +32,7 @@ sudo apt update && sudo apt install \
 ```
 ### Setting Network Interface
 
-The network interface used for by free_fleet for communication can be set in cyclonedds.xml.
+The network interface used for by free_fleet for communication can be set in [cyclonedds.xml.](https://github.com/project-covsg24/covsg24_fleet_client/blob/main/covsg24_fleet_client/config/cyclonedds.xml)
 You should export the path to the cyclonedds.xml in your termianl before running fleet client and server. The command below can be used for this purpose.
 
 ```bash
