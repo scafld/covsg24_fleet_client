@@ -30,6 +30,14 @@ sudo apt update && sudo apt install \
   python3-colcon-common-extensions \
   maven default-jdk   #To install dependencies for message generation
 ```
+### Setting Network Interface
+
+The network interface used for by free_fleet for communication can be set in cyclonedds.xml.
+You should export the path to the cyclonedds.xml in your termianl before running fleet client and server. The command below can be used for this purpose.
+
+```bash
+export CYCLONEDDS_URI=file://$PWD/cyclonedds.xml
+```
 
 # Usage examples
 ## Robot: Jackal
